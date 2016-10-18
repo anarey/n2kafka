@@ -329,6 +329,7 @@ int mse_opaque_reload(json_t *config, void *_opaque) {
 	}
 
 	pthread_rwlock_wrlock(&decoder_info->per_listener_enrichment_rwlock);
+
 	swap_ptrs(decoder_info->per_listener_enrichment,enrichment_aux);
 	swap_ptrs(opaque->rkt,rkt_aux);
 	decoder_info->max_time_offset_warning_wait = max_time_offset_warning_wait;
