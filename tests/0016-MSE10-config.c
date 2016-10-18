@@ -1,4 +1,5 @@
 #include "rb_mse_tests.h"
+#include "rb_mem_tests.h"
 
 #include <stdarg.h>
 #include <stddef.h>
@@ -95,6 +96,16 @@ static const char MSE_ARRAY_IN[] = "[]";
 	// *INDENT-ON*
 
 static const char MSE_EMPTY[] = "";
+
+static void mem_test(void (*cb)(const char *_listener_config),
+	                 const char *_listener_config) {
+	size_t i = 1;
+	do {
+		mem_wrap_fail_in = i++;
+		cb(_listener_config);
+	} while (0 == mem_wrap_fail_in);
+	mem_wrap_fail_in = 0;
+}
 
 static void testMSE10Decoder14_null_mse(const char *mse_array_str,
                              const char *_listener_config) {
@@ -594,6 +605,10 @@ static void check_test1() {
 	                LISTENER_NULL_CONFIG);
 }
 
+static void test1_mem() {
+	mem_test(check_test1,LISTENER_NULL_CONFIG);
+}
+
 static void testMSE8ConfigInitGlobal() {
 	init_global_config();
 }
@@ -601,6 +616,7 @@ static void testMSE8ConfigInitGlobal() {
 int main() {
 	const struct CMUnitTest tests[] = {
 		cmocka_unit_test(testMSE8ConfigInitGlobal),
+		cmocka_unit_test(test1_mem),
 		cmocka_unit_test(test1),
 		cmocka_unit_test(test2),
 		cmocka_unit_test(test3),
