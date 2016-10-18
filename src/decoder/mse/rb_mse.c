@@ -153,7 +153,7 @@ static int parse_per_listener_opaque_config(struct mse_opaque *opaque,
         json_t *config) {
 	assert(opaque);
 	assert(config);
-	char err[BUFSIZ];
+	char err[BUFSIZ] = "";
 	const char *topic_name = NULL;
 
 	const int rc = parse_decoder_info(&opaque->decoder_info,
@@ -289,7 +289,7 @@ int mse_opaque_reload(json_t *config, void *_opaque) {
 #ifdef MSE_OPAQUE_MAGIC
 	assert(MSE_OPAQUE_MAGIC == opaque->magic);
 #endif
-	char err[BUFSIZ];
+	char err[BUFSIZ] = "";
 	const char *topic_name = NULL;
 	json_t *enrichment_aux = NULL;
 	rd_kafka_topic_t *rkt_aux = NULL;
