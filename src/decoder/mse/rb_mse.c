@@ -400,6 +400,7 @@ static int parse_sensor(json_t *sensor, json_t *streams_db) {
 	const int set_rc = json_object_set_new(streams_db, stream, _enrich);
 	if (set_rc != 0) {
 		rdlog(LOG_ERR, "Can't set new MSE enrichment db entry (out of memory?)");
+		return -1;
 	}
 
 	return 0;
@@ -412,6 +413,7 @@ int parse_mse_array(void *_db, const struct json_t *mse_array) {
 
 	json_t *value = NULL, *new_db = NULL;
 	size_t _index;
+	int ret = 0;
 
 	if (!json_is_array(mse_array)) {
 		rdlog(LOG_ERR, "Expected array");
@@ -425,7 +427,11 @@ int parse_mse_array(void *_db, const struct json_t *mse_array) {
 	}
 
 	json_array_foreach(mse_array, _index, value) {
-		parse_sensor(value, new_db);
+		ret = parse_sensor(value, new_db);
+		if (ret != 0) {
+			json_decref(new_db);
+			return -1;
+		}
 	}
 
 	pthread_rwlock_wrlock(&db->rwlock);
